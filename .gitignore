@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/Note/.vs/Note/FileContentIndex
+/Note/.vs/Note/FileContentIndex/31cd490b-6d61-4e73-b5fa-0641300e5e79.vsidx
+/Note/.vs/Note/v17/.suo
+/Note/.vs/Note/v17/DocumentLayout.json
+/Note/obj
