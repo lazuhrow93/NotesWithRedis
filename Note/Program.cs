@@ -1,3 +1,4 @@
+using Note.App.Configuration;
 using Note.Data.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +9,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddRedis();
+
+//custom
+builder.Services.AddServicesForApp();
+builder.Services.AddConfigurationForData();
 
 var app = builder.Build();
 
