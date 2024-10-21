@@ -6,6 +6,9 @@ namespace Note.Data.Repository
     public interface IEntityRepository<TEntity>
     {
         TEntity[]? GetAll();
+        Book[]? GetBooks();
+
+        bool AddBook(Book book);
     }
 
     public class EntityRepository<TEntity> : IEntityRepository<TEntity>
@@ -21,6 +24,16 @@ namespace Note.Data.Repository
         public TEntity[]? GetAll()
         {
             throw new NotImplementedException();
+        }
+
+        public Book[]? GetBooks()
+        {
+            return _context.GetAllBooks();
+        }
+
+        public bool AddBook(Book book)
+        {
+            return _context.AddBook(book);
         }
     }
 }

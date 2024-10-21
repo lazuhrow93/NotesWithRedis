@@ -1,18 +1,21 @@
-﻿using StackExchange.Redis;
+﻿using Note.Entities;
+using StackExchange.Redis;
 using System.Formats.Tar;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Note.Data
 {
     public interface INoteDataContext
     {
-        public T Add<T>(T Entity, string user);
-        public T Update<T>(T Entity, string user);
-        public bool Delete<T>(T Entity, string user);
+        Book[]? GetAllBooks();
+        bool AddBook(Book book);
     }
 
     public class NoteDataContext : INoteDataContext
     {
+        private static int _bookId = 0;
+        
         private IDatabase _database;
 
         public NoteDataContext(IDatabase database)
@@ -20,34 +23,25 @@ namespace Note.Data
             _database = database;    
         }
 
-        public T Add<T>(T entity, string user)
+        public bool AddBook(Book book)
         {
-            var redisKey = new RedisKey($"{user}:{nameof(T)}");
-            var redisValue = new RedisValue(entity.ToRedisValue());
-            _database.SetAdd(redisKey, redisValue);
-            return entity;
+            var redisKey = new RedisKey("book");
+            var redisValue = new RedisValue(book.ToRedisString(++_bookId));
+            var result = _database.SetAdd(redisKey, redisValue);
+            return true;
         }
 
-        public T Update<T>(T Entity, string user)
+        public Book[]? GetAllBooks()
         {
-            var redisKey = new RedisKey($"{user}:{nameof(T)}");
-            var obj = _database.StringGet(redisKey);
-            if(obj == RedisValue.Null)
-                throw new Exception();
-
-            var objDeserialize = JsonSerializer.Deserialize<T>(obj!.ToString());
-            objDeserialize = Entity;
-            var newObj = JsonSerializer.Serialize(objDeserialize);
-
-            _database.SetAdd(redisKey, newObj);
-
-            return objDeserialize;
+            var redisKey = new RedisKey("books");
+            var s = _database.StringGet(redisKey); //an array of [id-bookTitle]
+            return SerializeFromRedisValue<Book[]>(s);
         }
 
-        public bool Delete<T>(T Entity, string user)
+        private T? SerializeFromRedisValue<T>(RedisValue redisValue)
         {
-            var redisKEy = new RedisKey($"{user}:{nameof(T)}");
-            return _database.KeyDelete(redisKEy);
+            var x = redisValue.ToString();
+            return JsonSerializer.Deserialize<T>(x);
         }
     }
 }

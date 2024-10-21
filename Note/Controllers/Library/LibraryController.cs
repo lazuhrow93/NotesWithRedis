@@ -9,6 +9,7 @@ using Note.Entities;
 namespace Note.App.Controllers.Library
 {
     [ApiController]
+    [Route("[controller]")]
     public class LibraryController
     {
         private ILogger<LibraryController> _logger;
@@ -24,7 +25,8 @@ namespace Note.App.Controllers.Library
             _mapper = mapper;
         }
 
-        [HttpGet(Name = "books")]
+        [HttpGet]
+        [Route("books")]
         public GetBooksCatalogResponse GetBooksCatalog()
         {
             var books = _bookRepository.GetAll();
@@ -33,7 +35,17 @@ namespace Note.App.Controllers.Library
                 BookDtos = _mapper.Map<BookDto[]>(books)
             };
 
-            return response
+            return response;
+        }
+
+        [HttpGet]
+        [Route("addbooks")]
+        public bool AddBooksCatalog()
+        {
+            return _bookRepository.AddBook(new Book()
+            {
+                Title = "The Eye of the World"
+            });
         }
 
         public class LibraryProfile : Profile
