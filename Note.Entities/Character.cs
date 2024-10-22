@@ -5,8 +5,8 @@ public class Character : Entity
     public string? Name { get; set; }
     public long BookId { get; set; }
 
-    public override string ToRedisString(int id)
+    public override string ToRedisString()
     {
-        return $"{id}-{BookId}-{Name}";
+        return $"{Id}-{BookId}-{Name}";
     }
 }

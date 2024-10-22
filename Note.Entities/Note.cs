@@ -7,8 +7,8 @@ public class Note : Entity
     public int ChapterNumber { get; set; }
     public long CharacterId { get; set; }
 
-    public override string ToRedisString(int id)
+    public override string ToRedisString()
     {
-        return $"{id}-{BookId}-{ChapterNumber}-{CharacterId}-{TextValue}";
+        return $"{Id}-{BookId}-{ChapterNumber}-{CharacterId}-{TextValue}";
     }
 }

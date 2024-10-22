@@ -8,8 +8,7 @@ namespace Note.Data
 {
     public interface INoteDataContext
     {
-        Book[]? GetAllBooks();
-        bool AddBook(Book book);
+        bool Add<T>(T entity) where T : Entity;
     }
 
     public class NoteDataContext : INoteDataContext
@@ -17,31 +16,56 @@ namespace Note.Data
         private static int _bookId = 0;
         
         private IDatabase _database;
+        private IRedisKeyProvider _keyProvider;
 
-        public NoteDataContext(IDatabase database)
+        public NoteDataContext(IDatabase database,
+            IRedisKeyProvider redisKeyProvider)
         {
             _database = database;    
+            _keyProvider = redisKeyProvider;
         }
 
-        public bool AddBook(Book book)
+        public bool Add<T>(T entity)
+            where T : Entity
         {
-            var redisKey = new RedisKey("book");
-            var redisValue = new RedisValue(book.ToRedisString(++_bookId));
-            var result = _database.SetAdd(redisKey, redisValue);
-            return true;
-        }
-
-        public Book[]? GetAllBooks()
-        {
-            var redisKey = new RedisKey("books");
-            var s = _database.StringGet(redisKey); //an array of [id-bookTitle]
-            return SerializeFromRedisValue<Book[]>(s);
+            var reservedId = ReserveId<T>();
+            var modelKey = _keyProvider.Model<T>();
+            entity.Id = reservedId;
+            var result = _database.SetAdd(modelKey, new RedisValue(entity.ToRedisString()));
+            return result;
         }
 
         private T? SerializeFromRedisValue<T>(RedisValue redisValue)
         {
             var x = redisValue.ToString();
             return JsonSerializer.Deserialize<T>(x);
+        }
+
+        private long ReserveId<T>()
+        {
+            var redisKey = _keyProvider.Identifier<T>();
+            return _database.StringIncrement(redisKey, 1);
+        }
+    }
+
+    public interface IRedisKeyProvider
+    {
+        RedisKey Identifier<T>();
+        RedisKey Model<T>();
+    }
+
+    public class RedisKeyProvider : IRedisKeyProvider
+    {
+        private const string _delimiter = ":";
+
+        public RedisKey Identifier<T>()
+        {
+            return new RedisKey($"identifier{_delimiter}{nameof(T)}");
+        }
+
+        public RedisKey Model<T>()
+        {
+            return new RedisKey($"{nameof(T)}");
         }
     }
 }
