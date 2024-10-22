@@ -14,12 +14,12 @@ public class RedisKeyProvider : IRedisKeyProvider
 
     public RedisKey Identifier<T>()
     {
-        return new RedisKey($"identifier{_delimiter}{nameof(T)}");
+        return new RedisKey($"identifier{_delimiter}{typeof(T).Name}");
     }
 
     public RedisKey Model<T>()
     {
-        return new RedisKey($"{nameof(T)}");
+        return new RedisKey($"{typeof(T).Name}");
     }
 }
 

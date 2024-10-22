@@ -6,6 +6,7 @@ namespace Note.Data.Repository
     public interface IEntityRepository<TEntity>
     {
         TEntity[]? GetAll();
+        bool Add(TEntity entity);
     }
 
     public class EntityRepository<TEntity> : IEntityRepository<TEntity>
@@ -21,6 +22,11 @@ namespace Note.Data.Repository
         public TEntity[]? GetAll()
         {
             throw new NotImplementedException();
+        }
+
+        public bool Add(TEntity entity)
+        {
+            return _context.Add(entity);
         }
     }
 }

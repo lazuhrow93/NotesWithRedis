@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Note.App.Controllers.Library.Dto;
 using Note.App.Controllers.Library.Responses;
@@ -14,14 +13,17 @@ namespace Note.App.Controllers.Library
     {
         private ILogger<LibraryController> _logger;
         private IBookRepository _bookRepository;
+        private ICharacterRepostiory _characterRepository;
         private IMapper _mapper;
 
         public LibraryController(ILogger<LibraryController> logger,
             IBookRepository bookRepository,
+            ICharacterRepostiory characterRepostiory,
             IMapper mapper)
         {
             _logger = logger;
             _bookRepository = bookRepository;
+            _characterRepository = characterRepostiory;
             _mapper = mapper;
         }
 
@@ -42,9 +44,21 @@ namespace Note.App.Controllers.Library
         [Route("addbooks")]
         public bool AddBooksCatalog()
         {
-            return _bookRepository.AddBook(new Book()
+            return _bookRepository.Add(new Book()
             {
-                Title = "The Eye of the World"
+                Title = $"The Eye of the World"
+            });
+        }
+
+        [HttpGet]
+        [Route("AddCharacter")]
+        public bool AddCharacterCatalog()
+        {
+            var dateTime = DateTime.UtcNow;
+            return _characterRepository.Add(new Character()
+            {
+                Name = "Egwnene Al' Vere",
+                BookId = 1
             });
         }
 
