@@ -1,7 +1,6 @@
-﻿using Note.Entities;
+﻿using Note.Data.RedisLibrary;
+using Note.Entities;
 using StackExchange.Redis;
-using System.Formats.Tar;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Note.Data
@@ -35,6 +34,13 @@ namespace Note.Data
             return result;
         }
 
+        public T[]? GetAll<T>()
+        {
+            var modelKey = _keyProvider.Model<T>();
+            var result = _database.StringGet(modelKey).ToString();
+            return [];
+        }
+
         private T? SerializeFromRedisValue<T>(RedisValue redisValue)
         {
             var x = redisValue.ToString();
@@ -45,27 +51,6 @@ namespace Note.Data
         {
             var redisKey = _keyProvider.Identifier<T>();
             return _database.StringIncrement(redisKey, 1);
-        }
-    }
-
-    public interface IRedisKeyProvider
-    {
-        RedisKey Identifier<T>();
-        RedisKey Model<T>();
-    }
-
-    public class RedisKeyProvider : IRedisKeyProvider
-    {
-        private const string _delimiter = ":";
-
-        public RedisKey Identifier<T>()
-        {
-            return new RedisKey($"identifier{_delimiter}{nameof(T)}");
-        }
-
-        public RedisKey Model<T>()
-        {
-            return new RedisKey($"{nameof(T)}");
         }
     }
 }
