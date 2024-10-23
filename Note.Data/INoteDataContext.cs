@@ -8,6 +8,7 @@ namespace Note.Data
     public interface INoteDataContext
     {
         bool Add<T>(T entity) where T : Entity;
+        T[]? GetAll<T>();
     }
 
     public class NoteDataContext : INoteDataContext

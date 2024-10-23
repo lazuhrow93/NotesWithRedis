@@ -12,7 +12,7 @@ namespace Note.Data.Repository
     public class EntityRepository<TEntity> : IEntityRepository<TEntity>
         where TEntity : Entity
     {
-        private INoteDataContext _context;
+        protected INoteDataContext _context;
 
         public EntityRepository(INoteDataContext database)
         {

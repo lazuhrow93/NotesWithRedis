@@ -1,18 +1,29 @@
-﻿using Note.Entities;
+﻿using AutoMapper;
+using Note.Entities;
 
 namespace Note.Domain
 {
     public interface IEntitySync
     {
-        bool Sync<TEntity, TEntityModel>(TEntity entity, TEntityModel model);
+        TEntity Sync<TEntity, TEntityModel>(TEntity? entity, TEntityModel model)
+            where TEntity : Entity;
     }
 
     public class EntitySync : IEntitySync
     {
-        public bool Sync<TEntity, TEntityModel>(TEntity entity, TEntityModel model)
+        private IMapper _mapper;
+
+        public EntitySync(IMapper mapper)
+        {
+            _mapper = mapper;    
+        }
+        public TEntity Sync<TEntity, TEntityModel>(TEntity? entity, TEntityModel model)
             where TEntity : Entity
         {
-
+            if(entity is null)
+                return _mapper.Map<TEntityModel, TEntity>(model);
+            else
+                return _mapper.Map<TEntityModel, TEntity>(model, entity);
         }
     }
 }

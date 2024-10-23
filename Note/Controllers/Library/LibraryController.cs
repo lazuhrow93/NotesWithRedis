@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Note.App.Controllers.Library.Dto;
 using Note.App.Controllers.Library.Requests;
 using Note.App.Controllers.Library.Responses;
+using Note.App.Services;
 using Note.Data.Repository;
 using Note.Entities;
 
@@ -13,27 +14,25 @@ namespace Note.App.Controllers.Library
     public class LibraryController
     {
         private ILogger<LibraryController> _logger;
-        private IBookRepository _bookRepository;
-        private ICharacterRepostiory _characterRepository;
         private IMapper _mapper;
+        private IControlCenter _controlCenter;
 
         public LibraryController(ILogger<LibraryController> logger,
-            IBookRepository bookRepository,
-            ICharacterRepostiory characterRepostiory,
-            IMapper mapper)
+            IMapper mapper,
+            IControlCenter controlCenter)
         {
             _logger = logger;
-            _bookRepository = bookRepository;
-            _characterRepository = characterRepostiory;
             _mapper = mapper;
+            _controlCenter = controlCenter;
         }
 
         [HttpGet]
         [Route("addbooks")]
         public bool AddBooksCatalog(AddBookToCatalogRequests request)
         {
-            var details = _mapper.Map<BookDto>(request);
-            return _bookRepository.Add(details);
+            var bookDetails = _mapper.Map<BookDto>(request);
+            _controlCenter.AddBook(bookDetails);
+            return true;
         }
 
         [HttpGet]
