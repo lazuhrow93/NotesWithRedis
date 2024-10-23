@@ -42,3 +42,5 @@
 /Note.Entities/bin/Debug/net8.0/Note.Entities.deps.json
 /Note.Entities/bin/Debug/net8.0/Note.Entities.dll
 /Note.Entities/bin/Debug/net8.0/Note.Entities.pdb
+/Note.Domain/obj/Debug/net8.0
+/Note.Domain/obj

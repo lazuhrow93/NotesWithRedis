@@ -3,6 +3,6 @@
     public class BookDto
     {
         public string? Title {  get; set; }
-        public int BookId { get; set; }
+        public string? AuthorName { get; set; }
     }
 }

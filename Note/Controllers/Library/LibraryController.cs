@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Note.App.Controllers.Library.Dto;
+using Note.App.Controllers.Library.Requests;
 using Note.App.Controllers.Library.Responses;
 using Note.Data.Repository;
 using Note.Entities;
@@ -28,26 +29,11 @@ namespace Note.App.Controllers.Library
         }
 
         [HttpGet]
-        [Route("books")]
-        public GetBooksCatalogResponse GetBooksCatalog()
-        {
-            var books = _bookRepository.GetAll();
-            var response = new GetBooksCatalogResponse()
-            {
-                BookDtos = _mapper.Map<BookDto[]>(books)
-            };
-
-            return response;
-        }
-
-        [HttpGet]
         [Route("addbooks")]
-        public bool AddBooksCatalog()
+        public bool AddBooksCatalog(AddBookToCatalogRequests request)
         {
-            return _bookRepository.Add(new Book()
-            {
-                Title = $"The Eye of the World"
-            });
+            var details = _mapper.Map<BookDto>(request);
+            return _bookRepository.Add(details);
         }
 
         [HttpGet]
@@ -66,9 +52,9 @@ namespace Note.App.Controllers.Library
         {
             public LibraryProfile()
             {
-                CreateMap<Book, BookDto>()
-                    .ForMember(d => d.Title, opt => opt.MapFrom(s => s.Title))
-                    .ForMember(d => d.BookId, opt => opt.MapFrom(s => s.Id));
+                CreateMap<AddBookToCatalogRequests, BookDto>()
+                    .ForMember(d => d.Title, opt => opt.MapFrom(s => s.BookName))
+                    .ForMember(d => d.AuthorName, opt => opt.MapFrom(s => s.AuthorName));
             }
         }
     }
