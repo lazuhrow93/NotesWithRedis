@@ -1,5 +1,6 @@
 ﻿using Note.Entities;
 using StackExchange.Redis;
+using System;
 
 namespace Note.Data.Repository
 {
@@ -7,6 +8,8 @@ namespace Note.Data.Repository
     {
         TEntity[]? GetAll();
         bool Add(TEntity entity);
+        bool Remove(TEntity entity);
+        bool Update(TEntity entity);
     }
 
     public class EntityRepository<TEntity> : IEntityRepository<TEntity>
@@ -27,6 +30,16 @@ namespace Note.Data.Repository
         public bool Add(TEntity entity)
         {
             return _context.Add(entity);
+        }
+
+        public bool Remove(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Update(TEntity entit)
+        {
+            throw new NotImplementedException();
         }
     }
 }

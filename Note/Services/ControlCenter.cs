@@ -35,7 +35,16 @@ namespace Note.App.Services
         {
             var model = _mapper.Map<BookDto, BookModel>(bookDto);
             var entity = _bookRepository.GetByTitleAndAuthor(model.Title, model.AuthorName);
-            _entitySync.Sync(entity, model);
+            var redisTracker = _entitySync.Sync(entity, model);
+
+            if (redisTracker.Added())
+                _bookRepository.Add(redisTracker.Entity!);
+            else if (redisTracker.Deleted())
+                _bookRepository.Remove(redisTracker.Entity!);
+            else if (redisTracker.Updated())
+                _bookRepository.Update(redisTracker.Entity!);
+
+            //else no change
         }
 
         public void AddCharacter(CharacterDto characterDto)

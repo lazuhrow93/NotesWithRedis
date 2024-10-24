@@ -40,11 +40,12 @@ namespace Note.App.Controllers.Library
         public bool AddCharacterCatalog()
         {
             var dateTime = DateTime.UtcNow;
-            return _characterRepository.Add(new Character()
-            {
-                Name = "Egwnene Al' Vere",
-                BookId = 1
-            });
+            //return _characterRepository.Add(new Character()
+            //{
+            //    Name = "Egwnene Al' Vere",
+            //    BookId = 1
+            //});
+            return true;
         }
 
         public class LibraryProfile : Profile
