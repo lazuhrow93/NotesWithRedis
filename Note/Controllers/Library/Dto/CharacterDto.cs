@@ -4,5 +4,6 @@
     {
         public string? Name { get; set; }
         public string? BookName { get; set; }
+        public string? AuthorName { get; set; }
     }
 }

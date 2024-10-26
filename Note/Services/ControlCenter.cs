@@ -4,6 +4,7 @@ using Note.Data.Repository;
 using Note.Domain;
 using Note.Domain.EntityModel;
 using Note.Entities;
+using Entity = Note.Entities;
 
 namespace Note.App.Services
 {
@@ -15,18 +16,21 @@ namespace Note.App.Services
     public class ControlCenter : IControlCenter
     {
         private IBookRepository _bookRepository;
-        private ICharacterRepostiory _characterRepostiory;
+        private ICharacterRepostiory _characterRepository;
+        private INoteRepository _noteRepository;
         private IMapper _mapper;
         private IEntitySync _entitySync;
 
         public ControlCenter(
             IBookRepository bookRepository,
             ICharacterRepostiory characterRepository,
+            INoteRepository noteRepository,
             IEntitySync entitySync,
             IMapper mapper)
         {
             _bookRepository = bookRepository;
-            _characterRepostiory = characterRepository;
+            _characterRepository = characterRepository;
+            _noteRepository = noteRepository;
             _entitySync = entitySync;
             _mapper = mapper;
         }
@@ -38,21 +42,61 @@ namespace Note.App.Services
             var redisTracker = _entitySync.Sync(entity, model);
 
             if (redisTracker.Added())
+            {
                 _bookRepository.Add(redisTracker.Entity!);
-            else if (redisTracker.Deleted())
-                _bookRepository.Remove(redisTracker.Entity!);
-            else if (redisTracker.Updated())
-                _bookRepository.Update(redisTracker.Entity!);
+                return;
+            }
 
-            //else no change
+            if (redisTracker.Updated())
+            {
+                _bookRepository.Update(redisTracker.Entity!);
+                return;
+            }
         }
 
         public void AddCharacter(CharacterDto characterDto)
         {
-            var entity = _mapper.Map<CharacterDto, Character>(characterDto);
-            _characterRepostiory.Add(entity);
+            var characterModel = _mapper.Map<CharacterDto, CharacterModel>(characterDto);
+            var book = _bookRepository.GetByTitleAndAuthor(characterDto.BookName, characterDto.AuthorName);
+            if (book == null)
+                throw new Exception($"Book doesn't exist");
+
+            var entity = _characterRepository.GetByBook(book.Id, characterDto.Name!);
+            var redisTracker = _entitySync.Sync(entity, characterModel);
+
+            if (redisTracker.Added())
+            {
+                _characterRepository.Add(redisTracker.Entity!);
+                return;
+            }
+
+            if (redisTracker.Updated())
+            {
+                _characterRepository.Update(redisTracker.Entity!);
+                return;
+            }
         }
 
+        public void AddNote(NoteDto noteDto)
+        {
+            var commentModel = _mapper.Map<NoteDto, NoteModel>(noteDto);
+
+            var book = _bookRepository.GetByTitleAndAuthor(noteDto.BookName, noteDto.AuthorName);
+            if (book == null)
+                throw new Exception($"Book doesn't exist");
+            commentModel.BookId = book.Id;
+
+            var character = _characterRepository.GetByBook(book.Id, noteDto.CharacterName!);
+            if (character == null)
+                throw new Exception($"Character doesnt exist");
+            commentModel.CharacterId = character.Id;
+
+            var redisTracker = _entitySync.Sync<Entity.Note, NoteModel>(null, commentModel);
+            if (redisTracker.Added() == false)
+                throw new Exception("Unable to add Note");
+
+            _noteRepository.Add(redisTracker.Entity!);
+        }
     }
 
     public class DomainMapper : Profile
