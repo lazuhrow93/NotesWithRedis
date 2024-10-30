@@ -33,7 +33,8 @@ namespace Note.Data.Configuration
         {
             return services
                 .AddScoped<IBookRepository, BookRepository>()
-                .AddScoped<ICharacterRepostiory, CharacterRepository>();
+                .AddScoped<ICharacterRepostiory, CharacterRepository>()
+                .AddScoped<INoteRepository, NoteRepository>();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Note.App.Controllers.Library
             _controlCenter = controlCenter;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("addbooks")]
         public bool AddBooksCatalog(AddBookToCatalogRequests request)
         {

@@ -110,6 +110,10 @@ namespace Note.App.Services
             CreateMap<CharacterDto, Character>()
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
                 .ForMember(d => d.BookId, opt => opt.Ignore());
+
+            CreateMap<BookDto, BookModel>()
+                .ForMember(d => d.Title, opt => opt.MapFrom(s => s.Title))
+                .ForMember(d => d.AuthorName, opt => opt.MapFrom(s => s.AuthorName));
         }
     }
 }

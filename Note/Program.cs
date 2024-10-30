@@ -1,6 +1,6 @@
 using Note.App.Configuration;
 using Note.Data.Configuration;
-
+using Note.Domain.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,8 +11,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //custom
-builder.Services.AddServicesForApp();
+builder.Services.AddConfigurationForApp();
 builder.Services.AddConfigurationForData();
+builder.Services.AddConfigurationForDomain();
 
 var app = builder.Build();
 

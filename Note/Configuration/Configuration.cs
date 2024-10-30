@@ -1,17 +1,25 @@
 ﻿using Note.App.Controllers.Library;
+using Note.App.Services;
 
 namespace Note.App.Configuration
 {
     public static class Configuration
     {
-        public static IServiceCollection AddServicesForApp(this IServiceCollection services)
+        public static IServiceCollection AddConfigurationForApp(this IServiceCollection services)
         {
-            return AddAutoMapperProfiles(services);
+            return services
+                .AddAutoMapperProfiles()
+                .AddControlCenter();
         }
 
-        public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
+        private static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
         {
             return services.AddAutoMapper(typeof(LibraryController.LibraryProfile));
+        }
+
+        private static IServiceCollection AddControlCenter(this IServiceCollection services)
+        {
+            return services.AddScoped<IControlCenter, ControlCenter>();
         }
     }
 }
