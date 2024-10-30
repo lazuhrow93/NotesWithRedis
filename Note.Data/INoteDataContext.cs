@@ -40,7 +40,7 @@ namespace Note.Data
             var modelKey = _keyProvider.Model<T>();
             var result = _database.StringGet(modelKey).ToString();
 
-            //Todo: Parse object into T
+            
             return [];
         }
 
