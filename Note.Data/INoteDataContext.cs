@@ -44,6 +44,28 @@ namespace Note.Data
             return [];
         }
 
+        private long GetNextId<T>()
+        {
+            var keyForIdentifier = _keyProvider.ForIdentifier();
+            var rawRedisValue = _database.StringGet(keyForIdentifier);
+            var idObj = SerializeFromRedisValue<Identifier>(rawRedisValue);
+
+            if (idObj == null)
+                throw new Exception("Identifier object not set");
+
+            switch (typeof(T).Name)
+            {
+                case "Book" :
+                    return idObj.BookId;
+                case "Character":
+                    return idObj.CharacterId;
+                case "Note":
+                    return idObj.NoteId;
+                default:
+                    throw new Exception("That entity is not configured to have an Id");
+            }
+        }
+
         private T? SerializeFromRedisValue<T>(RedisValue redisValue)
         {
             var x = redisValue.ToString();

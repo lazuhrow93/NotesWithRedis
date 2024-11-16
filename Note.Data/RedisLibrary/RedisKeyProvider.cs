@@ -4,6 +4,7 @@ namespace Note.Data.RedisLibrary;
 
 public interface IRedisKeyProvider
 {
+    RedisKey ForIdentifier();
     RedisKey Identifier<T>();
     RedisKey Model<T>();
 }
@@ -11,6 +12,9 @@ public interface IRedisKeyProvider
 public class RedisKeyProvider : IRedisKeyProvider
 {
     private const string _delimiter = ":";
+
+    public RedisKey ForIdentifier()
+        => new RedisKey("Identifier");
 
     public RedisKey Identifier<T>()
     {
