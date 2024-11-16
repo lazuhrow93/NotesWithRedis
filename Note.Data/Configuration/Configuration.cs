@@ -21,7 +21,7 @@ namespace Note.Data.Configuration
                 .AddScoped<NoteDataContext>()
                 .AddScoped<IDatabase>(cfg =>
                 {
-                    ConnectionMultiplexer m = ConnectionMultiplexer.Connect("redis-14095.c323.us-east-1-2.ec2.redns.redis-cloud.com:14095,password=nzXnvMTwp9O3HQGpqjpkKF6vrvYNDoIO");
+                    ConnectionMultiplexer m = ConnectionMultiplexer.Connect("");
                     return m.GetDatabase();
                 })
                 .AddScoped<IRedisKeyProvider, RedisKeyProvider>();

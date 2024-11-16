@@ -8,6 +8,6 @@ public class Book : Entity
 
     public override string ToRedisString()
     {
-        return $"{Id}-{Title!.ToLower()}";
+        return $"{Id}-{Title!.ToLower()}-{AuthorId}";
     }
 }

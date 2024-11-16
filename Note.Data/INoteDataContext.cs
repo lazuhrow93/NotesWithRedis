@@ -34,7 +34,7 @@ namespace Note.Data
             var result = _database.SetAdd(modelKey, new RedisValue(entity.ToRedisString()));
             return result;
         }
-
+ 
         public T[]? GetAll<T>()
         {
             var modelKey = _keyProvider.Model<T>();

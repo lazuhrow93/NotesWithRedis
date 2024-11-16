@@ -38,6 +38,7 @@ namespace Note.App.Services
         public void AddBook(BookDto bookDto)
         {
             var model = _mapper.Map<BookDto, BookModel>(bookDto);
+
             var entity = _bookRepository.GetByTitleAndAuthor(model.Title, model.AuthorName);
             var redisTracker = _entitySync.Sync(entity, model);
 
@@ -47,11 +48,12 @@ namespace Note.App.Services
                 return;
             }
 
-            if (redisTracker.Updated())
-            {
-                _bookRepository.Update(redisTracker.Entity!);
-                return;
-            }
+            //adding a book should not update it
+            //if (redisTracker.Updated())
+            //{
+            //    _bookRepository.Update(redisTracker.Entity!);
+            //    return;
+            //}
         }
 
         public void AddCharacter(CharacterDto characterDto)
@@ -61,8 +63,8 @@ namespace Note.App.Services
             if (book == null)
                 throw new Exception($"Book doesn't exist");
 
-            var entity = _characterRepository.GetByBook(book.Id, characterDto.Name!);
-            var redisTracker = _entitySync.Sync(entity, characterModel);
+            var existingCharacter = _characterRepository.GetByBook(book.Id, characterDto.Name!);
+            var redisTracker = _entitySync.Sync(existingCharacter, characterModel);
 
             if (redisTracker.Added())
             {
@@ -70,11 +72,12 @@ namespace Note.App.Services
                 return;
             }
 
-            if (redisTracker.Updated())
-            {
-                _characterRepository.Update(redisTracker.Entity!);
-                return;
-            }
+            //adding a character should not update it 
+            //if (redisTracker.Updated())
+            //{
+            //    _characterRepository.Update(redisTracker.Entity!);
+            //    return;
+            //}
         }
 
         public void AddNote(NoteDto noteDto)
