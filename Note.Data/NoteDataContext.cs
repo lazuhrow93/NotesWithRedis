@@ -33,7 +33,11 @@ namespace Note.Data
         public T[]? GetAll<T>()
         {
             var modelKey = _keyProvider.Entity<T>();
-            var result = _database.StringGet(modelKey).ToString();
+            var rawRedisVals = _database
+                .SetScan(modelKey)
+                .Select(rv => rv.ToString());
+
+            var result = _database.SetScan(modelKey).ToString();
             
             return [];
         }
