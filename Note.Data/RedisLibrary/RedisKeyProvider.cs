@@ -2,26 +2,21 @@
 
 namespace Note.Data.RedisLibrary;
 
-public interface IRedisKeyProvider
-{
-    RedisKey ForIdentifier();
-    RedisKey Identifier<T>();
-    RedisKey Model<T>();
-}
-
 public class RedisKeyProvider : IRedisKeyProvider
 {
     private const string _delimiter = ":";
 
-    public RedisKey ForIdentifier()
-        => new RedisKey("Identifier");
+    public RedisKey MasterKey()
+    {
+        return new RedisKey($"identifier");
+    }
 
     public RedisKey Identifier<T>()
     {
         return new RedisKey($"identifier{_delimiter}{typeof(T).Name}");
     }
 
-    public RedisKey Model<T>()
+    public RedisKey Entity<T>()
     {
         return new RedisKey($"{typeof(T).Name}");
     }
