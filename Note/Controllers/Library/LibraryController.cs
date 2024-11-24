@@ -28,7 +28,7 @@ namespace Note.App.Controllers.Library
 
         [HttpPost]
         [Route("addbooks")]
-        public bool AddBooksCatalog(AddBookToCatalogRequests request)
+        public bool AddBooksCatalog(AddBookToCatalogRequest request)
         {
             var bookDetails = _mapper.Map<BookDto>(request);
             _controlCenter.AddBook(bookDetails);
@@ -37,14 +37,10 @@ namespace Note.App.Controllers.Library
 
         [HttpGet]
         [Route("AddCharacter")]
-        public bool AddCharacterCatalog()
+        public bool AddCharacterCatalog(AddCharacterToCatalogRequest request)
         {
-            var dateTime = DateTime.UtcNow;
-            //return _characterRepository.Add(new Character()
-            //{
-            //    Name = "Egwnene Al' Vere",
-            //    BookId = 1
-            //});
+            var characterDetails = _mapper.Map<CharacterDto>(request);
+            _controlCenter.AddCharacter(characterDetails);
             return true;
         }
 
@@ -52,9 +48,18 @@ namespace Note.App.Controllers.Library
         {
             public LibraryProfile()
             {
-                CreateMap<AddBookToCatalogRequests, BookDto>()
+                CreateMap<AddBookToCatalogRequest, BookDto>()
                     .ForMember(d => d.Title, opt => opt.MapFrom(s => s.BookName))
                     .ForMember(d => d.AuthorName, opt => opt.MapFrom(s => s.AuthorName));
+
+                CreateMap<AddCharacterToCatalogRequest, CharacterDto>()
+                    .ForMember(d => d.FirstName, opt => opt.MapFrom(s => s.FirstName))
+                    .ForMember(d => d.MiddleName, opt => opt.MapFrom(s => s.MiddleName))
+                    .ForMember(d => d.LastName, opt => opt.MapFrom(s => s.LastName))
+                    .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
+                    .ForMember(d => d.BookName, opt => opt.MapFrom(s => s.BookName))
+                    .ForMember(d => d.AuthorName, opt => opt.MapFrom(s => s.AuthorName));
+
             }
         }
     }

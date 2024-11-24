@@ -11,6 +11,7 @@ namespace Note.App.Services
     public interface IControlCenter
     {
         void AddBook(BookDto bookDto);
+        void AddCharacter(CharacterDto characterDto);
     }
 
     public class ControlCenter : IControlCenter
@@ -47,13 +48,6 @@ namespace Note.App.Services
                 _bookRepository.Add(redisTracker.Entity!);
                 return;
             }
-
-            //adding a book should not update it
-            //if (redisTracker.Updated())
-            //{
-            //    _bookRepository.Update(redisTracker.Entity!);
-            //    return;
-            //}
         }
 
         public void AddCharacter(CharacterDto characterDto)
@@ -71,34 +65,6 @@ namespace Note.App.Services
                 _characterRepository.Add(redisTracker.Entity!);
                 return;
             }
-
-            //adding a character should not update it 
-            //if (redisTracker.Updated())
-            //{
-            //    _characterRepository.Update(redisTracker.Entity!);
-            //    return;
-            //}
-        }
-
-        public void AddNote(NoteDto noteDto)
-        {
-            var commentModel = _mapper.Map<NoteDto, NoteModel>(noteDto);
-
-            var book = _bookRepository.GetByTitleAndAuthor(noteDto.BookName, noteDto.AuthorName);
-            if (book == null)
-                throw new Exception($"Book doesn't exist");
-            commentModel.BookId = book.Id;
-
-            var character = _characterRepository.GetByBook(book.Id, noteDto.CharacterName!);
-            if (character == null)
-                throw new Exception($"Character doesnt exist");
-            commentModel.CharacterId = character.Id;
-
-            var redisTracker = _entitySync.Sync<Entity.Note, NoteModel>(null, commentModel);
-            if (redisTracker.Added() == false)
-                throw new Exception("Unable to add Note");
-
-            _noteRepository.Add(redisTracker.Entity!);
         }
     }
 
@@ -111,6 +77,9 @@ namespace Note.App.Services
                 .ForMember(d => d.AuthorName, opt => opt.MapFrom(s => s.AuthorName));
 
             CreateMap<CharacterDto, Character>()
+                .ForMember(d=>d.FirstName, opt => opt.MapFrom(s=>s.FirstName))
+                .ForMember(d=>d.MiddleName, opt => opt.MapFrom(s=>s.MiddleName))
+                .ForMember(d=>d.LastName, opt => opt.MapFrom(s=>s.LastName))
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
                 .ForMember(d => d.BookId, opt => opt.Ignore());
 

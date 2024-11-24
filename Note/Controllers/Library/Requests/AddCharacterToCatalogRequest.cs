@@ -1,6 +1,6 @@
-﻿namespace Note.App.Controllers.Library.Dto
+﻿namespace Note.App.Controllers.Library.Requests
 {
-    public class CharacterDto
+    public class AddCharacterToCatalogRequest
     {
         public string? FirstName { get; set; }
         public string? MiddleName { get; set; }
