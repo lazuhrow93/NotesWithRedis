@@ -35,7 +35,7 @@ namespace Note.App.Controllers.Library
             return true;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("AddCharacter")]
         public bool AddCharacterCatalog(AddCharacterToCatalogRequest request)
         {

@@ -76,7 +76,7 @@ namespace Note.App.Services
                 .ForMember(d => d.Title, opt => opt.MapFrom(s => s.Title))
                 .ForMember(d => d.AuthorName, opt => opt.MapFrom(s => s.AuthorName));
 
-            CreateMap<CharacterDto, Character>()
+            CreateMap<CharacterDto, CharacterModel>()
                 .ForMember(d=>d.FirstName, opt => opt.MapFrom(s=>s.FirstName))
                 .ForMember(d=>d.MiddleName, opt => opt.MapFrom(s=>s.MiddleName))
                 .ForMember(d=>d.LastName, opt => opt.MapFrom(s=>s.LastName))
