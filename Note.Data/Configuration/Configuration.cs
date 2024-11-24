@@ -2,26 +2,29 @@
 using Note.Data.RedisLibrary;
 using Note.Data.Repository;
 using StackExchange.Redis;
+using Microsoft.Extensions.Configuration;
 
 namespace Note.Data.Configuration
 {
     public static class Configuration
     {
-        public static IServiceCollection AddConfigurationForData(this IServiceCollection services)
+        public static IServiceCollection AddConfigurationForData(this IServiceCollection services, IConfigurationManager configurationManager)
         {
             return services
                 .AddRepositories()
-                .AddRedis();
+                .AddRedis(configurationManager);
                 
         }
 
-        public static IServiceCollection AddRedis(this IServiceCollection services)
+        public static IServiceCollection AddRedis(this IServiceCollection services, IConfigurationManager configurationManager)
         {
+            var val = configurationManager["Redis"];
+
             services
                 .AddScoped<NoteDataContext>()
                 .AddScoped<IDatabase>(cfg =>
                 {
-                    ConnectionMultiplexer m = ConnectionMultiplexer.Connect("");
+                    ConnectionMultiplexer m = ConnectionMultiplexer.Connect(val!);
                     return m.GetDatabase();
                 })
                 .AddScoped<IRedisKeyProvider, RedisKeyProvider>();
